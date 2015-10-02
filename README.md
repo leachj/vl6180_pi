@@ -18,6 +18,16 @@ vl6180 handle = vl6180_initialise(1);
 int distance = get_distance(handle);
 ```
 
+the integer passed into initialise is the i2c device number /dev/i2c-n
+
+if you do not have the i2c device on your pi you need to enable i2c. This can be done by following the instructions here: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
+
+You may also need to install i2c-tools libi2c-dev
+
+```
+sudo apt-get install i2c-tools libi2c-dev
+```
+
 ## Motivation
 
 Whilst there as already an existing Arduino library for the sensor there was nothing to allow it to work with the Pi. This project solves that.

@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 
 int read_byte(vl6180 handle, int reg){
 	char data_write[2];
@@ -52,8 +53,9 @@ void clear_interrupts(vl6180 handle) {
 
 vl6180 vl6180_initialise(int device){
 	vl6180 handle=-1;
-	char *filename = "/dev/i2c-1";
-	if ((handle = open(filename, O_RDWR)) < 0) {
+	char buf[15];
+	snprintf(buf,15,"/dev/i2c-%d",device);
+	if ((handle = open(buf, O_RDWR)) < 0) {
 		return -2;
 	}
 	
