@@ -1,6 +1,6 @@
 ## Synopsis
 
-This library provides convenient access to distance measurements from the VL6180 time of flight distance sensor on the raspberry pi. The sensor board i have been using is from SparkFun https://www.sparkfun.com/products/12785
+This library provides convenient access to distance measurements from the VL6180 i2c time of flight distance sensor on the raspberry pi. The sensor board I have been using is from SparkFun https://www.sparkfun.com/products/12785
 
 Although it is designed for the Pi it is likely to work with most linux systems.
 
@@ -18,15 +18,9 @@ vl6180 handle = vl6180_initialise(1);
 int distance = get_distance(handle);
 ```
 
-the integer passed into initialise is the i2c device number /dev/i2c-n
+The integer passed into initialise is the i2c device number /dev/i2c-n
 
-if you do not have the i2c device on your pi you need to enable i2c. This can be done by following the instructions here: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
-
-You may also need to install i2c-tools libi2c-dev
-
-```
-sudo apt-get install i2c-tools libi2c-dev
-```
+The distance returned will be in mm
 
 ## Motivation
 
@@ -34,16 +28,24 @@ Whilst there as already an existing Arduino library for the sensor there was not
 
 ## Installation
 
-to install the library download the code and then run 
+To install the library download the code and then run 
 
 ```
 make
 sudo make install
 ```
 
+If you do not have the i2c device on your pi you need to enable i2c. This can be done by following the instructions here: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
+
+You may also need to install i2c-tools libi2c-dev
+
+```
+sudo apt-get install i2c-tools libi2c-dev
+```
+
 ## Tests
 
-to test the basic functionality download the code and then run
+To test the basic functionality download the code and then run
 
 ```
 make check
