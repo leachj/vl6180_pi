@@ -25,7 +25,7 @@ STATEXT   = .a
 all: $(PACKAGE)$(LIBEXT) $(PACKAGE)$(STATEXT)
 
 $(PACKAGE)$(LIBEXT): $(patsubst %.c, %.o, $(lib_src))
-	$(CC) -shared -fPIC $(CFLAGS) $(LDFLAGS) $^ $(lib_libs) -Wl -o lib$@
+	$(CC) -shared -fPIC $(CFLAGS) $(LDFLAGS) $^ $(lib_libs) -o lib$@
 
 $(PACKAGE)$(STATEXT): $(patsubst %.c, %.o, $(lib_src))
 	ar rcs lib$@ $^
