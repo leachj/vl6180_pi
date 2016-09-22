@@ -2,7 +2,7 @@ PACKAGE = vl6180_pi
 VERSION = 0.0.1
 
 CC      ?= gcc
-CFLAGS += -Iinclude -DVERSION=\"$(VERSION)\"
+CFLAGS += -Iinclude -DVERSION=\"$(VERSION)\" -fPIC -g
 LDFLAGS  += 
 prefix   ?= /usr
 
