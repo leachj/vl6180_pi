@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <stdio.h>
 
+
+
 int read_byte(vl6180 handle, int reg){
 	char data_write[2];
         char data_read[1];
@@ -24,6 +26,15 @@ void write_byte(vl6180 handle, int reg,char data) {
  	data_write[1] = reg & 0xFF; // LSB of register address
  	data_write[2] = data & 0xFF;
  	write(handle, data_write, 3);
+}
+
+void write_two_bytes(vl6180 handle, int reg,int data) {
+ 	char data_write[4];
+ 	data_write[0] = (reg >> 8) & 0xFF;; // MSB of register address
+ 	data_write[1] = reg & 0xFF; // LSB of register address
+ 	data_write[2] = (data >> 8) & 0xFF;; // MSB of data
+ 	data_write[3] = data & 0xFF; // LSB of data
+ 	write(handle, data_write, 4);
 }
 
 void start_range(vl6180 handle) {
@@ -49,7 +60,20 @@ void clear_interrupts(vl6180 handle) {
 	write_byte(handle,0x015,0x07);
 }
 
+void set_scaling(vl6180 handle, int new_scaling){
 
+	int scalerValues[] = {0, 253, 127, 84};
+	int defaultCrosstalkValidHeight = 20;
+	if (new_scaling < 1 || new_scaling > 3) { return; }
+	
+	int ptp_offset = read_byte(handle,0x24);
+
+	write_two_bytes(handle,0x96,scalerValues[new_scaling]);
+	write_byte(handle,0x24,ptp_offset / new_scaling);
+	write_byte(handle,0x21, defaultCrosstalkValidHeight / new_scaling);
+	int rce = read_byte(handle,0x2d);
+  	write_byte(handle,0x2d, (rce & 0xFE) | (new_scaling == 1));
+}
 
 vl6180 vl6180_initialise(int device){
 	vl6180 handle=-1;
@@ -113,6 +137,8 @@ vl6180 vl6180_initialise(int device){
 		write_byte(handle,0x016, 0x00);
 	}
 	
+	set_scaling(handle,1);
+
 	return handle;
 }
 

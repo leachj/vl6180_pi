@@ -11,7 +11,21 @@ int main(){
 	
 	int distance = get_distance(handle);
 
-	printf("distance is %d\n", distance);
+	printf("distance at scaling 1 is %d\n", distance);
+
+	set_scaling(handle,2);
+	
+	distance = get_distance(handle);
+
+	printf("distance at scaling 2 is %d\n", distance);
+	
+	set_scaling(handle,3);
+	
+	distance = get_distance(handle);
+
+	printf("distance at scaling 3 is %d\n", distance);
+
+
 
 	return 0;
 }
