@@ -141,6 +141,11 @@ vl6180 vl6180_initialise(int device, int addr){
     return handle;
 }
 
+void vl6180_change_addr(vl6180 handle, int newAddr)
+{
+    write_byte(handle, 0x0212, newAddr);
+}
+
 int get_distance(vl6180 handle){
 
     int range;
