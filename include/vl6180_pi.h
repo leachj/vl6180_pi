@@ -4,7 +4,9 @@ extern "C"{
 
 typedef int vl6180;
 
-int vl6180_initialise(int device);
+#define VL1680_DEFALUT_ADDR 0x29
+
+int vl6180_initialise(int device, int i2cAddr);
 int get_distance(vl6180 handle);
 void set_scaling(vl6180 handle, int scaling);
 
