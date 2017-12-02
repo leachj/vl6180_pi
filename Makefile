@@ -4,7 +4,7 @@ VERSION = 0.0.1
 CC      ?= gcc
 CFLAGS += -Iinclude -DVERSION=\"$(VERSION)\" -fPIC -g
 LDFLAGS  += 
-prefix   ?= /usr
+prefix   ?= /usr/local/
 
 headers    = $(wildcard include/*.h)
 lib_hdr    = $(wildcard src/*.h)
