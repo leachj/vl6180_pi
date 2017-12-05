@@ -4,7 +4,7 @@ extern "C"{
 
 typedef int vl6180;
 
-#define VL1680_DEFAULT_ADDR 0x29
+#define VL6180_DEFAULT_ADDR 0x29
 
 ///Initialize a vl6180 sensor on the i2c port
 /// \param device The I2C bus to open. e.g. "1" for using /dev/i2c-1
