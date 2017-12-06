@@ -75,7 +75,12 @@ void set_scaling(vl6180 handle, int new_scaling){
     write_byte(handle,0x2d, (rce & 0xFE) | (new_scaling == 1));
 }
 
-vl6180 vl6180_initialise(int device, int addr){
+vl6180 vl6180_initialise(int device)
+{
+	return vl6180_initialise_address(device, VL6180_DEFAULT_ADDR);
+}
+
+vl6180 vl6180_initialise_address(int device, int addr){
     vl6180 handle=-1;
     char buf[15];
     snprintf(buf,15,"/dev/i2c-%d",device);
