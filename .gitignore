@@ -1,0 +1,6 @@
+*.swp
+*.o
+*.a
+*.so
+
+test-vl6180_pi
