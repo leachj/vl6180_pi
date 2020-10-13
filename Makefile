@@ -1,6 +1,7 @@
 PACKAGE = vl6180_pi
 VERSION = 0.0.1
 
+AR      ?= ar
 CC      ?= gcc
 CFLAGS += -Iinclude -DVERSION=\"$(VERSION)\" -fPIC -g
 LDFLAGS  += 
@@ -28,7 +29,7 @@ $(PACKAGE)$(LIBEXT): $(patsubst %.c, %.o, $(lib_src))
 	$(CC) -shared -fPIC $(CFLAGS) $(LDFLAGS) $^ $(lib_libs) -o lib$@
 
 $(PACKAGE)$(STATEXT): $(patsubst %.c, %.o, $(lib_src))
-	ar rcs lib$@ $^
+	$(AR) rcs lib$@ $^
 
 check: test-$(PACKAGE)$(EXEEXT)	
 	./test-$(PACKAGE)$(EXEEXT)
