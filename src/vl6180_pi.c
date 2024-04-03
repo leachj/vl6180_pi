@@ -20,6 +20,17 @@ int read_byte(vl6180 handle, int reg){
     return data_read[0];
 }
 
+int read_two_bytes(vl6180 handle, int reg){
+    char data_write[2];
+    char data_read[2];
+    data_write[0] = (reg >> 8) & 0xFF; // MSB of register address
+    data_write[1] = reg & 0xFF; // LSB of register address
+
+    write(handle, data_write, 2);
+    read(handle, data_read, 2);     // 16-bit value
+    return (data_read[0] << 8) | data_read[1];
+}
+
 void write_byte(vl6180 handle, int reg,char data) {
     char data_write[3];
     data_write[0] = (reg >> 8) & 0xFF;; // MSB of register address
@@ -148,7 +159,7 @@ vl6180 vl6180_initialise_address(int device, int addr){
 
 void vl6180_change_addr(vl6180 handle, int newAddr)
 {
-    write_byte(handle, 0x0212, newAddr);
+    write_byte(handle, VL6180X_I2C_SLAVE_DEVICE_ADDRESS, newAddr);
     ioctl(handle, I2C_SLAVE, newAddr);
 }
 
@@ -158,7 +169,64 @@ int get_distance(vl6180 handle){
     start_range(handle);
     poll_range(handle);
 
-    range=read_byte(handle,0x063);
+    range=read_byte(handle, VL6180X_RESULT_RANGE_VAL);
     clear_interrupts(handle);
     return range;
+}
+
+float get_ambient_light(vl6180 handle, vl6180x_als_gain_t vl6180x_als_gain) {
+    // Ported from C++: https://github.com/sparkfun/SparkFun_ToF_Range_Finder-VL6180_Arduino_Library
+    // First load in Gain we are using, do it everytime incase someone changes it on us.
+    // Note: Upper nibble should be set to 0x4 i.e. for ALS gain of 1.0 write 0x46
+    write_byte(handle, VL6180X_SYSALS_ANALOGUE_GAIN, (0x40 | vl6180x_als_gain));    // Set the ALS gain
+
+    // Start ALS Measurement
+    write_byte(handle, VL6180X_SYSALS_START, 0x01);
+    write_byte(handle, VL6180X_SYSTEM_INTERRUPT_CLEAR, 0x07);
+
+    // Retrieve the Raw ALS value from the sensor
+    unsigned int alsRaw = read_two_bytes(handle, VL6180X_RESULT_ALS_VAL);
+
+    // Get Integration Period for calculation, we do this everytime incase someone changes it on us.
+    unsigned int alsIntegrationPeriodRaw = read_two_bytes(handle, VL6180X_SYSALS_INTEGRATION_PERIOD);
+
+    float alsIntegrationPeriod = 100.0 / alsIntegrationPeriodRaw;
+
+    // Calculate actual LUX from Appnotes
+
+    float alsGain = 0.0;
+
+    switch (vl6180x_als_gain)
+    {
+    case GAIN_20:
+        alsGain = 20.0;
+        break;
+    case GAIN_10:
+        alsGain = 10.32;
+        break;
+    case GAIN_5:
+        alsGain = 5.21;
+        break;
+    case GAIN_2_5:
+        alsGain = 2.60;
+        break;
+    case GAIN_1_67:
+        alsGain = 1.72;
+        break;
+    case GAIN_1_25:
+        alsGain = 1.28;
+        break;
+    case GAIN_1:
+        alsGain = 1.01;
+        break;
+    case GAIN_40:
+        alsGain = 40.0;
+        break;
+    }
+
+    // Calculate LUX from formula in AppNotes
+
+    float alsCalculated = (float)0.32 * ((float)alsRaw / alsGain) * alsIntegrationPeriod;
+
+    return alsCalculated;
 }

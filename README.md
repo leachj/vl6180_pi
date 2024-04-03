@@ -4,7 +4,7 @@ This library provides convenient access to distance measurements from the VL6180
 
 Although it is designed for the Pi it is likely to work with most linux systems.
 
-## Code Example
+## Code Examples
 
 The library is very simple to use, here is the basic code for getting distance measurements
 
@@ -21,6 +21,19 @@ int distance = get_distance(handle);
 The integer passed into initialise is the i2c device number /dev/i2c-n
 
 The distance returned will be in mm
+
+```c
+#include <vl6180_pi/vl6180_pi.h>
+
+...
+
+vl6180 handle = vl6180_initialise(1);
+
+float ambient_light = get_ambient_light(handle, GAIN);
+```
+The ambient light returned will be in lx.
+
+GAIN - predefined value from `vl6180_pi.h`. For factory calibrated sensor **GAIN_1** is appropriate.
 
 ## Motivation
 
